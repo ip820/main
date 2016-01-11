@@ -42,7 +42,7 @@ void main()
 	test_im.matchImgSeq();
 
 
-	// Declare the finish
+
 	cout << "the end" << endl;
 
 
