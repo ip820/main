@@ -36,6 +36,7 @@ void main()
 
 	config_file = "D:/Experiment/Set_3_SIDEVIEW/Input_SV_REF/config.txt";
 
+	// Do function
 	FeatureExtractor test_im
 		(detector, descriptor, matcher, config_file);
 
