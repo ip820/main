@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>3D GeoPano</title>
+<meta http-equiv="Content-Type" content="text/html;  charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="style.css" media="all" />
+</head>
+<body>
+<div id="container">
+  <div id="header">
+    <h1>3D GeoPano</h1>
+  </div>
+  <div id="navigation">
+    <ul class="menu">
+      <li class="current_page_item"><a href="index.html">Home</a></li>
+      <li><a href="participants.html">Participants</a></li>
+      <li><a href="https://github.com/ip820/main/zipball/master">Download</a></li>
+      <li><a href="https://github.com/ip820/main">View on Github</a></li>
+    </ul>
+  </div>
+  <div id="content">
+    <div class="left">
+      <h2>Development of New Geo-referenced Content in Street Level</h2>
+      <p>As it is required high quality geo-referenced content to express real world authentically in a virtual space, the content aims to three objectives written below:</p>
+	  <blockquote>
+	  <p>1. The content should include textures projected from real world preserving original features.</p>
+	  <p>2. The content should provide 3D geometric information about the objectified model.</p>
+	  <p>3. The terrain features attributes such as GIS model should be organically linked with the content.</p>
+	  </blockquote>
+	  <p>Such content with those features is referred to as '3D textured GIS model' in this research.</p>
+
+      <p>The traditional way of editing the 3D model is to extract 3D geometric information to objectify the model and to map the texture elaborately. Such model is well integrated, though this approach is costly and time consuming. In addition, the users are informed of this model in a 2D projection, which leads to ineffectiveness.</p>
+
+	  <p>We thus propose the new content as a solution to overcome those limitations. It is able to determine the 3D coordinates of given object in real world using the 3D geometric attributes. At the same time, it is able to link GIS database with the content much closer and flexible. The content includes various features of geo-referenced images, with a range of application indoor to outdoor street level.</p>
+
+	  <img src="http://i.imgur.com/p5qCkfy.png" width="700px" height="300px"></img>
+      <p>The components of 'new media geo-referenced content' are shown above. The content includes direction vector information and depth (or distance) information as well as texture information. Such information is applied to calculating 3D absolute coordinates from the whole area of the content. The coordinates obtained from the content is linked to GIS database as a reference key to bring other attributes to the content.</p>
+	  
+	  <img src="http://i.imgur.com/ZJ5kffU.png" width="650px" height="300px"></img>
+	  <p>As shown above, users are able to extract 3D geometric model from the content, and vice versa (referred to as 'augmentation'). It is able to construct 3D models in an economical way with such feature. In addition, the construction and the renewal of GIS database is much economical and effective using the content, since it is able to link GIS database with the content much closer.</p>
+
+	  <img src="http://i.imgur.com/QSSJoyN.png" width="700px" height="500px"></img>
+	  <p>The software architecture for proposed new media geo-referenced content is shown in _Fig. 14._ The software consists of the main module and the sub module supporting the main module. The main module interacting with the GIS database consists of '3D coordinates determination module', 'Measurement module', '3D geometric model construction module', and 'Content augmentation module'. Other supporting modules include adjustment computation, coordinate conversion, calibration, visualization, and input/output conversion module.</p>  
+	
+	  <blockquote>
+	  <p>This research was supported by a grant (14NSIP-B080144-01) National Spatial Information Policy Research Program funded by Ministry of Land, Infrastructure and Transport of Korean government.</p>
+	  </blockquote>
+	</div>
+    <div class="right">
+	  <h3>Impyeong Lee</h3>
+	  <p>Email: ip820@uos.ac.kr</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
