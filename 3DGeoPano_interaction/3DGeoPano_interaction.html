@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>3DGeoPano_interaction</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<style>
+			body
+			{ background-color: #ffffff;
+			margin: 0px;
+			overflow: hidden;}
+			a
+			{ color: #000000;}
+			p
+			{ display: inline-block;}
+		</style>
+		<!--Set the basic style for the web page.-->
+		<!--웹 화면상의 기본적인 형태입니다.-->
+		<!-- 주석 -->
+		
+		<SCRIPT language="JavaScript" type="text/javascript" src="http://map.vworld.kr/js/sopMapInit.js.do?apiKey=C0171B4F-9F62-3B95-A876-C5CF6917D7C0"></SCRIPT>
+		<!--In order to use VWorld API, specify the issued VWorld key using the src attribute.-->
+		<!--브이월드 API를 사용하기 위해, 인증받은 브이월드 키값을 src 속성을 이용해 넣어줍니다.-->
+		
+		<script>
+		var SOPPlugin;
+
+		window.onload = function (){
+			setTimeout(function (){
+				sop.earth.createInstance('testmaparea', initCall, failureCall);
+			}, 1);
+		}
+		<!--Initialize the VWorld map.-->
+		<!--브이월드 지도를 불러옵니다.-->
+
+		function initCall(obj){
+			SOPPlugin = obj
+			SOPPlugin.getViewCamera().moveLonLat(127.0561144, 37.5837891);
+			SOPPlugin.getViewCamera().setAltitude(200);
+		}
+		<!--If succeeded, move the camera corresponds to the location on the image.-->
+		<!--지도를 불러오는 데 성공했다면, 카메라의 위치를 영상 속의 위치로 옮깁니다.-->
+
+		function failureCall(msg){
+			alert(msg);
+		}
+		<!--If failed, send the alert message.-->
+		<!--지도를 불러오는 데 실패했다면, 경고문을 출력합니다.-->
+		</script>
+	</head>
+	<body>
+
+		<p id="container"></p>
+		<script src="three.min.js"></script>
+		<!--In order to form a view on the image, specify the three.min.js file using the src attribute.-->
+		<!--이미지들을 구성하기 위해, three.min.js 파일을 src 속성을 이용해 넣어줍니다.-->
+		
+		<script>
+			var camera, scene, renderer;
+			var tiltval = 0, isUserInteracting = true, onMouseDownMouseX = 0, onMouseDownMouseY = 0,
+			lon = 0, onMouseDownLon = 0, lat = 0, onMouseDownLat = 0, phi = 0, theta = 0;
+			<!--Declare new variables for the image.-->
+			<!--이미지에 사용될 변수들을 지정합니다.-->
+
+			init();
+			animate();
+
+			function init() {
+				var container, mesh;
+				container = document.getElementById( 'container' );
+				
+				<!--To be able to display anything with three.js, we must define three things; scene, camera, and renderer.-->
+				<!--three.js를 이용해 무언가를 화면에 출력하려면, scene, camera, renderer 세 개가 정의되어야 합니다.-->
+				
+				camera = new THREE.PerspectiveCamera( 75, 600 / 480, 1, 500 );
+				camera.target = new THREE.Vector3( 0, 0, 0 );
+				<!--(1) Set the camera perspective. It includes fov, aspect and near-far plane.-->
+				<!--(1) 카메라의 투영 관점을 설정합니다. fov, aspect, near-far plane을 정의합니다.-->
+
+				scene = new THREE.Scene();
+				<!--(2) Set the scene.-->
+				<!--(2) 씬을 설정합니다.-->
+
+				var geometry = new THREE.SphereGeometry( 300, 60, 40 );
+				geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
+				var material = new THREE.MeshBasicMaterial( {
+					map: THREE.ImageUtils.loadTexture( 'Panorama_25.bmp' )
+				} );
+				mesh = new THREE.Mesh( geometry, material );
+				scene.add( mesh );
+				<!--Generate a sphere in the scene, with the radius and width-height segments. -->
+				<!--만들어진 씬 안에 반지름과 가로-세로 분할 수가 주어진 구를 구성합니다.-->
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( 600, 480 );
+				container.appendChild( renderer.domElement );
+				<!--(3) Set the renderer with some display options.-->
+				<!--(3) 화면 출력의 조건과 함께 렌더러를 설정합니다.-->
+			}
+
+			function animate() {
+				requestAnimationFrame( animate );
+				update();
+			}
+			function update() {
+				lat = Math.max( - 85, Math.min( 85, lat ) );
+				phi = THREE.Math.degToRad( 90 - lat );
+				theta = THREE.Math.degToRad( lon );
+
+				camera.target.x = 500 * Math.sin( phi ) * Math.cos( theta );
+				camera.target.y = 500 * Math.cos( phi );
+				camera.target.z = 500 * Math.sin( phi ) * Math.sin( theta );
+
+				camera.lookAt( camera.target );
+				renderer.render( scene, camera );
+			}
+			<!--Automatically update the display.-->
+			<!--자동으로 화면을 갱신합니다.-->
+			
+			function locateSet(){
+				var SOPCamera = SOPPlugin.getViewCamera();
+				SOPCamera.moveLonLat(127.0561144, 37.5837891);
+			}
+			<!--Button(1) Relocate the Vworld camera.-->
+			<!--버튼(1) 브이월드 카메라의 위치를 재조정합니다.-->
+			
+			function cameraSet(){
+				var SOPCamera = SOPPlugin.getViewCamera();
+
+				SOPCamera.setTilt(5);
+				SOPCamera.setDirect(0);
+				SOPCamera.setMoveMode(1);
+				
+				if ( isUserInteracting === true ) {
+					lon = 100;
+				}
+				tiltval = 0;
+			}
+			<!--Button(2) Change the Vworld camera display from third-person to first-person view.-->
+			<!--버튼(2) 브이월드 카메라 화면을 3인칭에서 1인칭 시야로 전환합니다.-->
+			
+			function heightSet(){
+				var SOPCamera = SOPPlugin.getViewCamera();
+				SOPCamera.setAltitude(42);
+			}
+			<!--Button(3) Set the height of the Vworld camera.-->
+			<!--버튼(3) 브이월드 카메라의 고도를 조정합니다.-->
+			
+			function totheLeft(){
+				var SOPCamera = SOPPlugin.getViewCamera();
+				tiltval -= 20;
+				SOPCamera.setDirect(tiltval);
+				if ( isUserInteracting === true ) {
+					lon -= 20;
+				}
+			}
+			function totheRight(){
+				var SOPCamera = SOPPlugin.getViewCamera();
+				tiltval += 20;
+				SOPCamera.setDirect(tiltval);
+				if ( isUserInteracting === true ) {
+					lon += 20;
+				}
+			}
+			<!--Button(4)(5) Move both image and VWorld camera view to the left or right.-->
+			<!--버튼(4)(5) 이미지와 브이월드 화면을 동시에 좌, 우로 움직입니다.-->
+			
+		</script>
+		<p id="testmaparea" style="width:600px;height:480px;"></p>
+		<br>
+		<input type="button" value="1. 위치 조정" onclick="locateSet()"/>
+		<input type="button" value="2. 카메라 동기화" onclick="cameraSet()"/>
+		<input type="button" value="3. 고도 조정" onclick="heightSet()"/>
+		<input type="button" value="◀" onclick="totheLeft()"/>
+		<input type="button" value="▶" onclick="totheRight()"/>
+		</body>
+</html>
